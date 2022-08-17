@@ -1,18 +1,18 @@
 import React, { FC, useEffect } from 'react';
 import { useAccess, useRequest } from 'umi';
-import { DemoModelState, ConnectProps, Loading, connect } from 'umi';
+import { AccountModelType, ConnectProps, Loading, connect } from 'umi';
 
 import style from './style.less';
-import { queryCurrent, queryFakeList } from '@/pages/demo/service';
+import { queryCurrent, queryFakeList } from './service';
 
 interface PageProps extends ConnectProps {
-  DemoModel: DemoModelState;
+  Account: AccountModelType;
   loading: boolean;
 }
 
-const PageDemo: FC<PageProps> = ({ DemoModel, dispatch }) => {
+const PageDemo: FC<PageProps> = ({ Account, dispatch }) => {
   const access = useAccess();
-  // const { name } = DemoModel;
+  // const { name } = Account;
 
   //  获取用户信息
   const { data: currentUser, loading: queryLoading } = useRequest(() => {
@@ -28,28 +28,18 @@ const PageDemo: FC<PageProps> = ({ DemoModel, dispatch }) => {
   console.log(listData);
   console.log(currentUser);
 
-  useEffect(() => {
-
-  }, []);
+  useEffect(() => {}, []);
   return (
     <div>
       <h1 className={style.titleHeader}>Demo Page</h1>
-      {
-        queryLoading ? (<p>loading</p>) : (
-          <div>{currentUser?.name}</div>
-        )
-      }
+      {queryLoading ? <p>loading</p> : <div>{currentUser?.name}</div>}
     </div>
   );
 };
 
-
 export default connect(
-  ({ DemoModel, loading }: {
-    DemoModel: DemoModelState;
-    loading: Loading
-  }) => ({
-    DemoModel,
-    loading: loading.models.DemoModel,
+  ({ Account, loading }: { Account: AccountModelType; loading: Loading }) => ({
+    Account,
+    loading: loading.models.account,
   }),
 )(PageDemo);

@@ -1,5 +1,8 @@
 export default {
   'menu.demo': '模板',
+  'menu.demo.useModel': 'useModel',
+  'menu.demo.useDva': 'useDva',
+
   'menu.home': '首页',
   'menu.admin': '管理员',
 
@@ -37,5 +40,4 @@ export default {
   'menu.exception.not-find': '404',
   'menu.exception.server-error': '500',
   'menu.exception.trigger': '触发错误',
-
 };

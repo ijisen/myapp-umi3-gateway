@@ -1,5 +1,5 @@
 export default {
-  '/portal': {
+  /*'/portal': {
     target: 'http://202.173.9.2:20000',
     changeOrigin: true,
     pathRewrite: {
@@ -13,5 +13,10 @@ export default {
     pathRewrite: {
       '^': '',
     },
+  },*/
+  '/api': {
+    target: 'http://localhost:8181/',
+    pathRewrite: { '^/api': '/mock/api' },
+    changeOrigin: false,
   },
 };

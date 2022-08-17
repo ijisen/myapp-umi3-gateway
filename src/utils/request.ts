@@ -1,5 +1,5 @@
 import { ResponseError } from 'umi-request';
-import { notification } from 'antd';
+import { message as $Message } from 'antd';
 import zh_CN from '@/locales/zh-CN/codeMessage';
 import en_US from '@/locales/en-US/codeMessage';
 import { isLocaleEn } from '@/utils/commont_rely';
@@ -46,15 +46,15 @@ export const errorHandler = (error: ResponseError) => {
   };
   console.log(error);
   console.log(response);
-  if(response && response.status) {
+  if (response && response.status) {
     const { status, url } = response;
     const errorText: string = codeMessage[status] || response.statusText;
-    notification.error({
+    $Message.error({
       message: `${codeMessage['req.err']} ${status}: ${url}`,
       description: errorText,
     });
-  } else if(!response) {
-    notification.error({
+  } else if (!response) {
+    $Message.error({
       message: codeMessage['network.err'],
       description: codeMessage['params.err'],
     });

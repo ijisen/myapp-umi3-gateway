@@ -26,13 +26,15 @@ export default defineConfig({
   publicPath,
   locale: {
     default: 'zh-CN',
-    antd: false,
-    title: false,
+    // 开启后，支持 antd 国际化
+    antd: true,
+    // 标题国际化
+    title: true,
     baseNavigator: true,
     baseSeparator: '-',
   },
   layout: {
-    // locale: true,
+    locale: true,
   },
   antd: {},
   routes,
@@ -80,15 +82,14 @@ export default defineConfig({
   /**
    * chainWebpack 是 只兼容webpack5； 所以mfsu必须开启
    * */
-  // @ts-ignore
   chainWebpack,
   // 同 headScripts，配置 <body> 里的额外脚本。
-  /*scripts: [
+  scripts: [
     {
       id: 'zdns-mo-header',
       src: 'https://static.zdns.cn/header/zdns-header.js?client_id=portal&auto_oauth=false',
     },
-  ],*/
+  ],
   proxy,
   mock: {},
 });

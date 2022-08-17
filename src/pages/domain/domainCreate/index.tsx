@@ -1,8 +1,10 @@
+import React, { FC } from 'react';
 
-export default function DomainCreatePage() {
+const DomainCreatePage: FC = () => {
   return (
     <div>
       <h1>Domain Create Page</h1>
     </div>
   );
-}
+};
+export default DomainCreatePage;

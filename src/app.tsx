@@ -1,7 +1,8 @@
 import React from 'react';
 import { history, RequestConfig } from 'umi';
-import { BasicLayoutProps } from '@ant-design/pro-layout';
-import { InitialModelState, UserInfo } from '@/types/basic';
+import type { BasicLayoutProps } from '@ant-design/pro-layout';
+import { HomeOutlined } from '@ant-design/icons';
+import { InitialModelState } from '@/types/basic.d';
 import { queryCurrentUser } from '@/services/base';
 /** 自定义函数 */
 import {
@@ -14,6 +15,41 @@ import Exception403 from '@/pages/exception/403';
 
 const { NODE_ENV } = process.env;
 
+import { mountElementId, headerElementId } from '../config/config.global.path';
+import MenuHeader from '@/components/MenuHeader';
+
+let headerHeight = 0;
+console.log(1111);
+
+/**
+ * 设置 mountElement dom节点高度
+ *
+ * */
+(function (mountEleId, headerEleId) {
+  // 获取 header dom 节点
+  const header_id = document.getElementById(headerEleId);
+
+  if (!header_id) {
+    return false;
+  }
+
+  // 获取 header 的高度
+  const header_height = header_id.offsetHeight || 60;
+
+  // 获取项目 root dom 节点
+  const mountElement = document.getElementById(mountEleId);
+
+  console.log(header_height);
+  // 设置 root dom 节点的高度
+  if (mountElement) {
+    // 将 header 的高度储存，供 src/components/MenuHeader 使用；
+    headerHeight = header_height;
+    const style = `height: calc(100% - ${header_height}px)`;
+    mountElement.setAttribute('style', style);
+  }
+})(mountElementId, headerElementId);
+
+console.log(2222);
 
 /**
  * request 数据请求配置
@@ -29,17 +65,6 @@ export const request: RequestConfig = {
   requestInterceptors,
   responseInterceptors,
 };
-
-
-export function onRouteChange({ routes, matchedRoutes, location, action }: any) {
-  console.log(routes);
-  console.log(matchedRoutes);
-  console.log(location);
-  console.log(action);
-  if(matchedRoutes.length) {
-    // document.title = matchedRoutes[matchedRoutes.length - 1].route.title || '';
-  }
-}
 
 /**
  * 项目初次加载时，配置信息
@@ -58,7 +83,7 @@ export async function getInitialState(): Promise<InitialModelState> {
     return undefined;
   };
   // 如果不是登录页面，执行
-  if(history.location.pathname !== loginPath) {
+  if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -77,11 +102,11 @@ export async function getInitialState(): Promise<InitialModelState> {
  * ProLayout 支持的api https://procomponents.ant.design/components/layout
  * */
 export const layout = ({
-                         initialState,
-                       }: {
+  initialState,
+}: {
   initialState: InitialModelState;
 }): BasicLayoutProps & {
-  unAccessible?: JSX.Element,
+  unAccessible?: JSX.Element;
 } => {
   console.log('---- ProLayout ----');
   // 获取语言
@@ -116,9 +141,39 @@ export const layout = ({
     disableMobile: true,
     // 不显示顶栏
     headerRender: false,
+    className: 'z-global-layout',
     // 不显示菜单的 title 和 logo
-    menuHeaderRender: false,
-
+    menuHeaderRender: () => {
+      return <MenuHeader height={headerHeight} />;
+    },
+    // 面包屑
+    breadcrumbRender: (routers = []) => {
+      // console.log(routers);
+      return [
+        {
+          path: '/',
+          breadcrumbName: 'Home',
+        },
+        ...routers,
+      ];
+    },
+    // 面包屑
+    itemRender: (route, params, routes, paths) => {
+      console.log(111111111);
+      console.log(route);
+      console.log(routes);
+      console.log(routes.indexOf(route));
+      console.log(paths);
+      console.log(22222222);
+      const first = routes.indexOf(route) === 0;
+      return first ? (
+        <HomeOutlined />
+      ) : (
+        // <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+        // <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+        <span>{route.breadcrumbName}</span>
+      );
+    },
 
     onPageChange: () => {
       const { currentUser } = initialState || {};
@@ -143,4 +198,3 @@ export const layout = ({
     ...initialState?.settings,
   };
 };
-

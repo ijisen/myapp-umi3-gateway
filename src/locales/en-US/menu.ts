@@ -1,5 +1,8 @@
 export default {
   'menu.demo': 'demo',
+  'menu.demo.useModel': 'useModel',
+  'menu.demo.useDva': 'useDva',
+
   'menu.home': 'home',
   'menu.admin': 'admin',
 
@@ -21,7 +24,6 @@ export default {
   'menu.whois.whiteList': '开放查询IP网段设置',
 
   'menu.tmch': 'TMCH management',
-
 
   'menu.exc': 'exc',
   'menu.exc.403': '403',
