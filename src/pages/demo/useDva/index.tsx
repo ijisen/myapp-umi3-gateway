@@ -5,12 +5,12 @@ import { AccountModelType, ConnectProps, Loading, connect } from 'umi';
 import style from './style.less';
 import { queryCurrent, queryFakeList } from './service';
 
-interface PageProps extends ConnectProps {
+interface PageUseDvaDemoProps extends ConnectProps {
   Account: AccountModelType;
   loading: boolean;
 }
 
-const PageDemo: FC<PageProps> = ({ Account, dispatch }) => {
+const UseDvaDemo: FC<PageUseDvaDemoProps> = ({ Account, dispatch }) => {
   const access = useAccess();
   // const { name } = Account;
 
@@ -42,4 +42,4 @@ export default connect(
     Account,
     loading: loading.models.account,
   }),
-)(PageDemo);
+)(UseDvaDemo);

@@ -23,7 +23,7 @@ const routes = [
     ],
   },
   { name: 'list', path: '/list', component: '@/pages/list' },
-  // { name: 'admin', path: '/admin', component: '@/pages/admin' },
+  { name: 'admin', path: '/admin', component: '@/pages/admin' },
   {
     path: '/domain',
     name: 'domain',
