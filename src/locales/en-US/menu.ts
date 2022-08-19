@@ -25,6 +25,9 @@ export default {
 
   'menu.tmch': 'TMCH management',
 
+  'menu.serviceModule': 'Service provisioning module',
+  'menu.serviceModule.registryOpen': 'Registry opened',
+
   'menu.exc': 'exc',
   'menu.exc.403': '403',
   'menu.exc.404': '404',

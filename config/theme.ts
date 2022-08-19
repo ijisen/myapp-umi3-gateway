@@ -1,6 +1,7 @@
 /**
  * antd主题色配置
  */
+
 export default {
   //base
   '@blue-base': '#1E5EFF',

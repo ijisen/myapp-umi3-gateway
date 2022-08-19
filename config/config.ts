@@ -92,4 +92,7 @@ export default defineConfig({
   ],
   proxy,
   mock: {},
+  cssLoader: {
+    localsConvention: 'camelCase',
+  },
 });

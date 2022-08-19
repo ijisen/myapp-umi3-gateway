@@ -26,6 +26,9 @@ export default {
 
   'menu.tmch': 'TMCH 管理',
 
+  'menu.serviceModule': '业务开通模块',
+  'menu.serviceModule.registryOpen': '开通注册局',
+
   'menu.exc': '异常页',
   'menu.exc.403': '403',
   'menu.exc.404': '404',

@@ -2,6 +2,19 @@ const NotFound = '@/pages/exception/404';
 
 const routes = [
   { path: '/', component: '@/pages/home' },
+  {
+    path: '/registry',
+    name: 'serviceModule',
+    routes: [
+      { path: '/demo', redirect: '/registry/open' },
+      {
+        name: 'registryOpen',
+        path: '/registry/open',
+        component: '@/pages/registry/registryOpen',
+      },
+      { component: NotFound },
+    ],
+  },
   // { name: 'demo', path: '/demo', component: '@/pages/demo' },
   { name: 'home', path: '/home', component: '@/pages/home' },
   {
@@ -23,7 +36,6 @@ const routes = [
     ],
   },
   { name: 'list', path: '/list', component: '@/pages/list' },
-  { name: 'admin', path: '/admin', component: '@/pages/admin' },
   {
     path: '/domain',
     name: 'domain',
@@ -57,7 +69,7 @@ const routes = [
     path: '/user',
     routes: [
       { path: '/user', component: '@/pages/list' },
-      // { path: '/user/admin', component: '@/pages/admin' },
+      { path: '/user/admin', component: '@/pages/admin' },
       { component: NotFound },
     ],
   },

@@ -46,19 +46,19 @@ export const errorHandler = (error: ResponseError) => {
   };
   console.log(error);
   console.log(response);
-  if (response && response.status) {
+  /*if (response && response.status) {
     const { status, url } = response;
     const errorText: string = codeMessage[status] || response.statusText;
-    $Message.error({
+    /!*$Message.error({
       message: `${codeMessage['req.err']} ${status}: ${url}`,
       description: errorText,
-    });
+    });*!/
   } else if (!response) {
-    $Message.error({
+   /!* $Message.error({
       message: codeMessage['network.err'],
       description: codeMessage['params.err'],
-    });
-  }
+    });*!/
+  }*/
   // return response;
   // If throw. The error will continue to be thrown.
   throw error;
