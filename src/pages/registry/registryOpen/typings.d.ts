@@ -1,4 +1,4 @@
-export type tabKeyType = 'articles' | 'applications' | 'projects';
+export type ExistValueValidatorType = 'registry' | 'username' | 'tld';
 
 export interface TagType {
   key: string;

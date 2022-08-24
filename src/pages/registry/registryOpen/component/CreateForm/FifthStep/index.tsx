@@ -15,7 +15,7 @@ import FormItemRender from '../_component/FormItemRender';
 import { CreateStepFormProps } from '../typings.d';
 
 /**
- * 第二步：初始化管理员帐号
+ * 第五步：完成
  *
  * */
 const CreateForm: React.FC<CreateStepFormProps> = (props) => {
