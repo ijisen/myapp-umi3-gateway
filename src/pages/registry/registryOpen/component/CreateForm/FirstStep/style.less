@@ -1,0 +1,20 @@
+@import '~antd/es/style/themes/default.less';
+
+.array-close-btn {
+  margin-bottom: 10px;
+  p {
+    display: inline-block;
+    cursor: pointer;
+    &:hover {
+      color: @primary-color;
+    }
+    :global {
+      .anticon {
+        transition: transform 0.2s;
+        &.open {
+          transform: rotate(90deg);
+        }
+      }
+    }
+  }
+}

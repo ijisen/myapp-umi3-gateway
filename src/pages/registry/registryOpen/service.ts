@@ -1,9 +1,8 @@
 import { request } from 'umi';
-import { ExistValueValidatorType } from '@/pages/registry/registryOpen/typings';
 
 /**
  * 参数否存在校验
- * @param[type]
+ * @param[data.type]
  *    --- registry 注册局名称否存在校验
  *    --- username 登录帐号是否存在校验
  *    --- tld     注册局-授权TLD是否存在校验
@@ -11,7 +10,7 @@ import { ExistValueValidatorType } from '@/pages/registry/registryOpen/typings';
  * */
 export async function apiOpenRegistryExistValidatorByType(
   data: {
-    type: ExistValueValidatorType;
+    type: 'registry' | 'username' | 'tld';
     params: any;
   },
   options?: { [key: string]: any },

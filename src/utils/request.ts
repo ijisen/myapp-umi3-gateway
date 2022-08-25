@@ -1,12 +1,12 @@
-import { ResponseError } from 'umi-request';
-import { message as $Message } from 'antd';
+import {
+  RequestOptionsInit,
+  ResponseError,
+  RequestInterceptor,
+} from 'umi-request';
 import zh_CN from '@/locales/zh-CN/codeMessage';
 import en_US from '@/locales/en-US/codeMessage';
 import { isLocaleEn } from '@/utils/commont_rely';
-import {
-  RequestInterceptor,
-  ResponseInterceptor,
-} from 'E:/dpp/domain-resolution/node_modules/umi-request';
+import { message as $Message } from 'antd';
 
 /**
  * 异常处理程序
@@ -35,7 +35,8 @@ import {
   // return {some: 'data'}; If return, return the value as a return. If you don't write it is equivalent to return undefined, you can judge whether the response has a value when processing the result.
   // return {some: 'data'};
 };*/
-export const errorHandler = (error: ResponseError) => {
+
+export const errorHandler = async (error: ResponseError) => {
   // console.log(2222222222);
   const { response } = error;
 
@@ -44,24 +45,30 @@ export const errorHandler = (error: ResponseError) => {
   } = {
     ...(isLocaleEn() ? en_US : zh_CN),
   };
-  console.log(error);
-  console.log(response);
-  /*if (response && response.status) {
+  // console.log(error);
+  if (response && response.status) {
     const { status, url } = response;
     const errorText: string = codeMessage[status] || response.statusText;
-    /!*$Message.error({
-      message: `${codeMessage['req.err']} ${status}: ${url}`,
-      description: errorText,
-    });*!/
+    $Message.destroy('resError');
+    $Message.error({
+      content: errorText,
+      key: 'resError',
+    });
   } else if (!response) {
-   /!* $Message.error({
-      message: codeMessage['network.err'],
-      description: codeMessage['params.err'],
-    });*!/
-  }*/
+    $Message.destroy('resError');
+    $Message.error({
+      content: codeMessage['params.err'],
+      key: 'resError',
+    });
+  }
   // return response;
   // If throw. The error will continue to be thrown.
-  throw error;
+  // throw error;
+  /* return {
+    success: false,
+    code: 1000,
+    message: codeMessage['params.err']
+  }*/
 };
 
 /**
@@ -73,7 +80,7 @@ export const middlewares = [];
  * Request 拦截器
  * */
 export const requestInterceptors: RequestInterceptor[] = [
-  (url, config) => {
+  (url: string, config: RequestOptionsInit) => {
     // console.log(url);
     // console.log(config);
     // console.log(666666);

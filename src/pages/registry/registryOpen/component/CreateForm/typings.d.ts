@@ -17,16 +17,30 @@ export type CustomFormItemType = {
   rules?: ValidatorRule[];
 };
 
-export type CreateStepFormProps = {
-  formName: string;
-  formItemLayout: { [propsName: string]: any };
-  buttonItemLayout: { [propsName: string]: any };
-  handleStepChange: (step: number, data?: any) => void;
-};
-
 export type TLDItemDataType = {
   registryName: string;
   tld: string;
+};
+
+export type CreateFormDataType = {
+  basicInfo: Record<string, string>;
+  accountInfo: Record<string, string>;
+  tldInfo: TLDItemDataType[];
+};
+
+export type CreateStepFormProps = {
+  formName: string;
+  registryFormData: CreateFormDataType;
+  submitting: boolean;
+  submitted: boolean;
+  formItemLayout: { [propsName: string]: any };
+  buttonItemLayout: { [propsName: string]: any };
+  handleStepChange: (name: string, type?: 'prev' | 'next') => void;
+  handleChildSubmit: (name: string, data?: any) => void;
+  httpValueExistValidator: (data: {
+    params: { name: string } | { username: string } | { tld: string };
+    type: 'registry' | 'username' | 'tld';
+  }) => Promise<any>;
 };
 
 export type TLDTableDataType = TLDItemDataType[];

@@ -14,9 +14,8 @@ import ComponentTable from '../_component/ComponentTable';
  * 第三步：授权TLD
  *
  * */
-const CreateForm: React.FC<
-  CreateStepFormProps & { basicInfo: { name?: string } }
-> = (props) => {
+const CreateForm: React.FC<CreateStepFormProps> = (props) => {
+  const { registryFormData } = props;
   const [form] = Form.useForm();
   const { formatMessage } = useIntl();
   const [modalVisible, setModalVisible] = useState(false);
@@ -29,25 +28,26 @@ const CreateForm: React.FC<
       registryName: string;
       tld: string;
     }[]
-  >([]);
-  const { handleStepChange } = props;
+  >(registryFormData.tldInfo || []);
 
   /** 数据提交 */
   const handleModalSubmit = () => {
+    const { httpValueExistValidator, registryFormData, formName } = props;
     form
       .validateFields()
-      .then((res) => {
-        console.log(res);
+      .then(async (values) => {
+        console.log(values);
         console.log(form);
         setFormLoading(true);
-        if (tableData.findIndex((item) => item.tld === res.tld) > -1) {
+        console.log(tableData);
+        if (tableData.findIndex((item) => item.tld === values.tld) > -1) {
           form.setFields([
             {
               name: 'tld',
               errors: [
                 formatMessage(
                   { id: 'registryOpen.createForm.tld.exist' },
-                  { tld: res.tld },
+                  { tld: values.tld },
                 ),
               ],
             },
@@ -56,14 +56,34 @@ const CreateForm: React.FC<
           return false;
         }
 
-        /** TODO: 远程校验中 ... */
-        setTableData(
-          tableData.concat({
-            ...res,
-            registryName: props.basicInfo?.name || '',
-          }),
-        );
-        handleCloseModal();
+        /** 远程校验中 ... */
+        const res = await httpValueExistValidator({
+          params: { tld: values.tld },
+          type: 'tld',
+        });
+        console.log(res);
+        const { success, message } = res || {};
+        if (success) {
+          setTableData(
+            tableData.concat({
+              ...values,
+              registryName: registryFormData.basicInfo?.name || '',
+            }),
+          );
+          handleCloseModal();
+        } else {
+          let failed_msg = formatMessage({
+            id: 'registryOpen.tld.validator.failed',
+          });
+          form.setFields([
+            {
+              name: 'tld',
+              warnings: [],
+              errors: [message || failed_msg],
+            },
+          ]);
+        }
+        setFormLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -106,22 +126,22 @@ const CreateForm: React.FC<
     }
   };
 
+  /** 返回上一步 */
+  const handleReturnToPrev = () => {
+    const { handleStepChange, formName } = props;
+    handleStepChange(formName, 'prev');
+  };
+
+  /** 预览 */
+  const handleSubmit = () => {
+    const { handleChildSubmit, formName } = props;
+    handleChildSubmit(formName, tableData);
+  };
+
   const handleCloseModal = () => {
     setModalVisible(false);
     form.resetFields();
   };
-
-  /** 预览 */
-  const handlePreview = () => {
-    handleStepChange(
-      3,
-      tableData.map((item) => ({
-        tld: item.tld,
-        registryName: item.registryName,
-      })),
-    );
-  };
-
   return (
     <Layout>
       {/**  操作栏按钮  */}
@@ -142,6 +162,16 @@ const CreateForm: React.FC<
         onBtnClick={handleTableClick}
         showOtp={true}
       />
+
+      {/** footer 按钮 */}
+      <div className="text-ct pbl ptl">
+        <Button type="primary" onClick={handleReturnToPrev}>
+          <FormattedMessage id="registryOpen.createForm.btn.prev" />
+        </Button>
+        <Button className="mll" type="primary" onClick={handleSubmit}>
+          <FormattedMessage id="registryOpen.createForm.btn.preview" />
+        </Button>
+      </div>
 
       <Modal
         title={<FormattedMessage id="registryOpen.createForm.tld.btn.create" />}
@@ -201,14 +231,6 @@ const CreateForm: React.FC<
           </Form.Item>
         </Form>
       </Modal>
-      <div className="text-ct pbl ptl">
-        <Button type="primary" onClick={() => handleStepChange(1)}>
-          <FormattedMessage id="registryOpen.createForm.btn.prev" />
-        </Button>
-        <Button className="mll" type="primary" onClick={handlePreview}>
-          <FormattedMessage id="registryOpen.createForm.btn.preview" />
-        </Button>
-      </div>
     </Layout>
   );
 };

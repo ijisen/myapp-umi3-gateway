@@ -20,7 +20,7 @@ const FormItemRender: React.FC<FormItemRenderProps> = (props) => {
         }
         return (
           <Form.Item key={index} {...item}>
-            <Input placeholder={`${item.label}`} />
+            <Input autoComplete="off" placeholder={`${item.label}`} />
           </Form.Item>
         );
       })}

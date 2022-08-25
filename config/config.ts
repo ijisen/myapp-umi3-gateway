@@ -85,10 +85,10 @@ export default defineConfig({
   chainWebpack,
   // 同 headScripts，配置 <body> 里的额外脚本。
   scripts: [
-    /*{
+    {
       id: 'zdns-mo-header',
-      src: 'https://static.zdns.cn/header/zdns-header.js?client_id=portal&auto_oauth=false',
-    },*/
+      src: 'https://static.zdns.cn/header/zdns-header.js?client_id=portal&auto_oauth=true',
+    },
   ],
   proxy,
   mock: {},

@@ -1,105 +1,86 @@
-import React, { useEffect, useState } from 'react';
-import { Steps, Form, Button } from 'antd';
+import React, { useState } from 'react';
+import { useIntl } from 'umi';
+import { message as $Message, Steps } from 'antd';
 
-import { setLocale, formatMessage, FormattedMessage } from './locales';
+import { CreateFormDataType } from './typings.d';
+
 import FirstStep from './FirstStep';
 import SecondStep from './SecondStep';
 import ThirdStep from './ThirdStep';
 import FourthStep from './FourthStep';
+import FifthStep from './FifthStep';
 
 import style from './style.less';
-import FifthStep from './FifthStep';
-import {
-  getLocale,
-  setLocale as umiSetLocale,
-} from '@@/plugin-locale/localeExports';
-import { EnumLanguageType } from '@/types/basic';
+import { getLocale } from '@@/plugin-locale/localeExports';
 
 interface CreateFormProps {
-  locale: string;
-  httpSubmitAJax: (formData: any) => Promise<{ success: boolean }>;
-  httpValueExistValidator: (
-    params: { name: string } | { username: string } | { tld: string },
-    type: 'registry' | 'username' | 'tld',
-  ) => Promise<{ success: boolean; message: string }>;
+  locale?: string;
+  httpSubmitAJax: (formData: any) => Promise<any>;
+  httpValueExistValidator: (data: {
+    params: { name: string } | { username: string } | { tld: string };
+    type: 'registry' | 'username' | 'tld';
+  }) => Promise<any>;
 }
 
+const initRegistryFormData = {
+  basicInfo: {
+    // registry.name =》 注册局名称
+    name: '',
+    // registry.address =》 注册局地址
+    address: ``,
+    // registry.postCode =》 邮编
+    postCode: '',
+    // registry.tel =》 电话
+    tel: '',
+    // registry.fax =》 传真
+    fax: '',
+    // registry.email =》 邮箱
+    email: '',
+    /** 管理联系人 */
+    // registry.adminContactName =》 管理名称
+    adminContactName: '',
+    // registry.adminContactTel =》 管理手机
+    adminContactTel: '',
+    // registry.adminContactPhone =》 管理电话
+    adminContactPhone: '',
+    // registry.adminContactEmail =》 管理邮箱
+    adminContactEmail: '',
+    /** 技术联系人 */
+    // registry.techContactName =》
+    techContactName: '',
+    // registry.techContactTel =》 技术手机
+    techContactTel: '',
+    // registry.techContactPhone =》 技术电话
+    techContactPhone: '',
+    // registry.techContactEmail =》 技术邮箱
+    techContactEmail: '',
+  },
+  accountInfo: {
+    // accountInfo.name =》 注册局管理员名称
+    name: '',
+    // accountInfo.username =》 登录帐号
+    username: ``,
+    // accountInfo.password =》 登录密码
+    password: '',
+    // accountInfo.repeatPassword =》 重复输入密码
+    repeatPassword: '',
+    // accountInfo.email =》 邮箱
+    email: '',
+  },
+  tldInfo: [],
+};
+
 const CreateForm: React.FC<CreateFormProps> = (props) => {
-  const [currentStep, setCurrentStep] = useState(3);
-  const [formData, setFormData] = useState<{
-    basicInfo: Record<string, string>;
-    accountInfo: Record<string, string>;
-    tldInfo: Record<string, string>[];
-  }>({
-    basicInfo: {
-      // registry.name =》 注册局名称
-      name: '注册局名称',
-      // registry.address =》 注册局地址
-      address: `注册局地址`,
-      // registry.postCode =》 邮编
-      postCode: '610100',
-      // registry.tel =》 电话
-      tel: '1023141',
-      // registry.fax =》 传真
-      fax: '115768',
-      // registry.email =》 邮箱
-      email: '111@cc.cc',
-      /** 管理联系人 */
-      // registry.adminContactName =》 管理名称
-      adminContactName: '管理名称',
-      // registry.adminContactTel =》 管理手机
-      adminContactTel: '15910665811',
-      // registry.adminContactPhone =》 管理电话
-      adminContactPhone: '125467',
-      // registry.adminContactEmail =》 管理邮箱
-      adminContactEmail: 'admin@cc.cc',
-      /** 技术联系人 */
-      // registry.techContactName =》
-      techContactName: '技术名称',
-      // registry.techContactTel =》 技术手机
-      techContactTel: '15910665812',
-      // registry.techContactPhone =》 技术电话
-      techContactPhone: '125467',
-      // registry.techContactEmail =》 技术邮箱
-      techContactEmail: 'tech@cc.cc',
-    },
-    accountInfo: {
-      // accountInfo.name =》 注册局管理员名称
-      name: '注册局管理员名称',
-      // accountInfo.username =》 登录帐号
-      username: `userA123ame`,
-      // accountInfo.password =》 登录密码
-      password: '61A010@0',
-      // accountInfo.repeatPassword =》 重复输入密码
-      repeatPassword: '61A010@0',
-      // accountInfo.email =》 邮箱
-      email: '115@768.cc',
-    },
-    tldInfo: [
-      { tld: 'cc', registryName: '注册局名称' },
-      { tld: 'com', registryName: '注册局名称' },
-      { tld: 'net', registryName: '注册局名称' },
-      { tld: 'cn', registryName: '注册局名称' },
-      { tld: 'china', registryName: '注册局名称' },
-    ],
+  const { formatMessage } = useIntl();
+  const { httpSubmitAJax, httpValueExistValidator } = props;
+
+  const [formStatus, setFormStatus] = useState({
+    submitting: false,
+    submitted: false,
   });
-
-  const { httpSubmitAJax } = props;
-
-  const handleSubmitData = () => {
-    httpSubmitAJax({}).then((res) => {
-      console.log(11123);
-      console.log(res);
-    });
-  };
-
-  const handleStepChange = (step: number, data?: any) => {
-    console.log('onChange:', step);
-    setCurrentStep(step);
-    switch (step) {
-      case 0:
-    }
-  };
+  const [currentStep, setCurrentStep] = useState(3);
+  const [registryFormData, setFormData] =
+    useState<CreateFormDataType>(initRegistryFormData);
 
   /** 步骤条 */
   const formItemArray = [
@@ -140,57 +121,140 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
     },
   ];
 
-  const handleChildFormSubmit = (name: string, values: any) => {
+  /** 提交数据格式 */
+  const handleSubmitData = () => {
+    setFormStatus({
+      ...formStatus,
+      submitting: true,
+    });
+    httpSubmitAJax(registryFormData)
+      .then((res) => {
+        const { success, message } = res || {};
+        console.log(res);
+        if (success) {
+          handleStepChange('fourthStep', 'next');
+          setFormStatus({
+            ...formStatus,
+            submitting: false,
+            submitted: true,
+          });
+          // $Message.success(formatMessage({ id: 'registryOpen.success' }));
+        } else {
+          setFormStatus({
+            ...formStatus,
+            submitting: false,
+          });
+          $Message.error(
+            message || formatMessage({ id: 'registryOpen.failed' }),
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setFormStatus({
+          ...formStatus,
+          submitting: false,
+        });
+        $Message.error(formatMessage({ id: 'registryOpen.failed' }));
+      });
+  };
+
+  /** */
+  const handleResetFormData = () => {
+    setFormStatus({
+      submitting: false,
+      submitted: false,
+    });
+    setFormData({ ...initRegistryFormData });
+  };
+
+  /** 步骤条切换 */
+  const handleStepChange = (name: string, type: 'prev' | 'next' = 'next') => {
+    console.log('onChange:', name);
+    let step = currentStep;
+    // 0 1 2 3 4
+    switch (name) {
+      case 'firstStep':
+        // 0 => 1
+        step = 1;
+        break;
+      case 'secondStep':
+        // 1 => 0 || 1 => 2
+        type === 'next' ? (step = 2) : (step = 0);
+        break;
+      case 'thirdStep':
+        // 2 => 1 || 2 => 3
+        type === 'next' ? (step = 3) : (step = 1);
+        break;
+      case 'fourthStep':
+        // 3 => 2 || 3 => 4
+        type === 'next' ? (step = 4) : (step = 2);
+        break;
+      case 'fifthStep':
+        // 4 => 3 || 4 => 0
+        type === 'next' ? (step = 0) : (step = 3);
+        if (type === 'next') {
+          handleResetFormData();
+        }
+        break;
+    }
+    setCurrentStep(step);
+  };
+
+  const handleChildSubmit = (name: string, data: any) => {
     console.log(name);
-    console.log(values);
+    console.log(data);
     switch (name) {
       case 'firstStep':
         setFormData({
-          ...formData,
+          ...registryFormData,
           basicInfo: {
-            ...formData?.basicInfo,
-            ...values,
+            ...registryFormData?.basicInfo,
+            ...data,
           },
         });
-        setCurrentStep(1);
+        handleStepChange(name);
         break;
       case 'secondStep':
         setFormData({
-          ...formData,
+          ...registryFormData,
           accountInfo: {
-            ...formData?.accountInfo,
-            ...values,
+            ...registryFormData?.accountInfo,
+            ...data,
           },
         });
-        setCurrentStep(2);
+        handleStepChange(name);
         break;
       case 'thirdStep':
         setFormData({
-          ...formData,
-          tldInfo: values,
+          ...registryFormData,
+          tldInfo: data,
         });
-        setCurrentStep(2);
+        handleStepChange(name);
+        break;
+      case 'fourthStep':
+        // 预览 =》 提交数据
+        handleSubmitData();
         break;
     }
   };
 
+  const labelCol_span = getLocale() === 'en-US' ? 5 : 4;
   const formComponentProps = {
+    ...formStatus,
+    registryFormData: { ...registryFormData },
     formItemLayout: {
-      labelCol: { span: 4 },
+      labelCol: { span: labelCol_span },
       wrapperCol: { span: 14 },
     },
     buttonItemLayout: {
-      wrapperCol: { span: 14, offset: 4 },
+      wrapperCol: { span: 14, offset: labelCol_span },
     },
     handleStepChange,
+    handleChildSubmit,
+    httpValueExistValidator,
   };
 
-  useEffect(() => {
-    const { locale } = props;
-    setLocale(locale);
-    console.log(`useEffect get ${props.locale}`);
-  }, [props.locale]);
-  console.log(props.locale);
   return (
     <div className={style.dneCreateForm}>
       <Steps
@@ -198,7 +262,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         size="small"
         initial={0}
         className={style.dneCreateFormSteps}
-        onChange={handleStepChange}
+        onChange={setCurrentStep}
         current={currentStep}
       >
         {formItemArray.map((item) => {
@@ -212,31 +276,21 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         })}
       </Steps>
       <div className="mtxl" style={{ width: 800, margin: '0 auto' }}>
-        <Form.Provider onFormFinish={handleChildFormSubmit}>
-          {currentStep === 0 && (
-            <FirstStep {...formComponentProps} formName="firstStep" />
-          )}
-          {currentStep === 1 && (
-            <SecondStep {...formComponentProps} formName="secondStep" />
-          )}
-          {currentStep === 2 && (
-            <ThirdStep
-              {...formComponentProps}
-              basicInfo={formData.basicInfo}
-              formName="thirdStep"
-            />
-          )}
-          {currentStep === 3 && (
-            <FourthStep
-              {...formComponentProps}
-              formData={formData}
-              formName="fourthStep"
-            />
-          )}
-          {currentStep === 4 && (
-            <FifthStep {...formComponentProps} formName="fifthStep" />
-          )}
-        </Form.Provider>
+        {currentStep === 0 && (
+          <FirstStep {...formComponentProps} formName="firstStep" />
+        )}
+        {currentStep === 1 && (
+          <SecondStep {...formComponentProps} formName="secondStep" />
+        )}
+        {currentStep === 2 && (
+          <ThirdStep {...formComponentProps} formName="thirdStep" />
+        )}
+        {currentStep === 3 && (
+          <FourthStep {...formComponentProps} formName="fourthStep" />
+        )}
+        {currentStep === 4 && (
+          <FifthStep {...formComponentProps} formName="fifthStep" />
+        )}
       </div>
     </div>
   );

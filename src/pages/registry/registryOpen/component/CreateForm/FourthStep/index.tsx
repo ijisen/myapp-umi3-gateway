@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Form, Button, List, Row, Col, Space } from 'antd';
-import { useIntl, FormattedMessage } from 'umi';
+import React from 'react';
+import { Button, List, Row, Col } from 'antd';
+import { FormattedMessage } from 'umi';
 
 import ComponentTable from '../_component/ComponentTable';
 
@@ -12,19 +12,35 @@ import './style.less';
  * 第四步：预览
  *
  * */
-const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
-  props,
-) => {
-  const { formData, handleStepChange } = props;
-  /** 数据提交 */
-  const handleSubmit = () => {};
+const CreateForm: React.FC<CreateStepFormProps> = (props) => {
+  /** 返回上一步 */
+  const handleReturnToPrev = () => {
+    const { handleStepChange, formName } = props;
+    handleStepChange(formName, 'prev');
+  };
 
-  const { basicInfo, accountInfo } = formData;
+  /** 数据提交 */
+  const handleSubmit = () => {
+    const { handleChildSubmit, formName } = props;
+    handleChildSubmit(formName);
+  };
+
+  const {
+    registryFormData: { basicInfo, accountInfo, tldInfo },
+  } = props;
+
   return (
     <div className="dne-registry-open-fourth-step">
       {/** 注册局信息 */}
       <List
-        header={<div className="head-title">注册局信息</div>}
+        header={
+          <div className="head-title">
+            <FormattedMessage
+              id="registryOpen.createForm.preview.first.title"
+              defaultMessage="注册局信息"
+            />
+          </div>
+        }
         bordered
         className="mbl"
       >
@@ -32,7 +48,10 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
           <Col span={12}>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                注册局名称
+                <FormattedMessage
+                  id="registryOpen.createForm.name"
+                  defaultMessage="注册局名称"
+                />
               </Col>
               <Col span={12} className="border-right">
                 {basicInfo.name}
@@ -40,7 +59,10 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
             </Row>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                注册局地址
+                <FormattedMessage
+                  id="registryOpen.createForm.address"
+                  defaultMessage="注册局地址"
+                />
               </Col>
               <Col span={12} className="text-lf border-right">
                 {basicInfo.address}
@@ -48,7 +70,10 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
             </Row>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                邮编
+                <FormattedMessage
+                  id="registryOpen.createForm.postCode"
+                  defaultMessage="邮编"
+                />
               </Col>
               <Col span={12} className="text-lf border-right">
                 {basicInfo.postCode}
@@ -56,7 +81,10 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
             </Row>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                电话
+                <FormattedMessage
+                  id="registryOpen.createForm.tel"
+                  defaultMessage="电话"
+                />
               </Col>
               <Col span={12} className="text-lf border-right">
                 {basicInfo.tel}
@@ -64,7 +92,10 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
             </Row>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                传真
+                <FormattedMessage
+                  id="registryOpen.createForm.fax"
+                  defaultMessage="传真"
+                />
               </Col>
               <Col span={12} className="text-lf border-right">
                 {basicInfo.fax}
@@ -72,7 +103,10 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
             </Row>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                邮箱
+                <FormattedMessage
+                  id="registryOpen.createForm.email"
+                  defaultMessage="邮箱"
+                />
               </Col>
               <Col span={12} className="text-lf border-right">
                 {basicInfo.email}
@@ -98,7 +132,15 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
           <Col span={12}>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                管理联系人名称
+                <FormattedMessage
+                  id="registryOpen.createForm.adminContact.title"
+                  defaultMessage="管理联系人"
+                />
+                &nbsp;
+                <FormattedMessage
+                  id="registryOpen.createForm.adminContactName"
+                  defaultMessage="名称"
+                />
               </Col>
               <Col span={12} className="border-right">
                 {basicInfo.adminContactName}
@@ -106,7 +148,15 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
             </Row>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                管理联系人手机
+                <FormattedMessage
+                  id="registryOpen.createForm.adminContact.title"
+                  defaultMessage="管理联系人"
+                />
+                &nbsp;
+                <FormattedMessage
+                  id="registryOpen.createForm.adminContactTel"
+                  defaultMessage="手机"
+                />
               </Col>
               <Col span={12} className="border-right">
                 {basicInfo.adminContactTel}
@@ -114,7 +164,15 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
             </Row>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                管理联系人电话
+                <FormattedMessage
+                  id="registryOpen.createForm.adminContact.title"
+                  defaultMessage="管理联系人"
+                />
+                &nbsp;
+                <FormattedMessage
+                  id="registryOpen.createForm.adminContactPhone"
+                  defaultMessage="电话"
+                />
               </Col>
               <Col span={12} className="text-lf">
                 {basicInfo.adminContactPhone}
@@ -122,7 +180,15 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
             </Row>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                管理联系人邮箱
+                <FormattedMessage
+                  id="registryOpen.createForm.adminContact.title"
+                  defaultMessage="管理联系人"
+                />
+                &nbsp;
+                <FormattedMessage
+                  id="registryOpen.createForm.adminContactEmail"
+                  defaultMessage="邮箱"
+                />
               </Col>
               <Col span={12} className="text-lf">
                 {basicInfo.adminContactEmail}
@@ -130,7 +196,15 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
             </Row>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                技术联系人名称
+                <FormattedMessage
+                  id="registryOpen.createForm.techContact.title"
+                  defaultMessage="技术联系人"
+                />
+                &nbsp;
+                <FormattedMessage
+                  id="registryOpen.createForm.techContactName"
+                  defaultMessage="名称"
+                />
               </Col>
               <Col span={12} className="text-lf">
                 {basicInfo.techContactName}
@@ -138,7 +212,15 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
             </Row>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                技术联系人手机
+                <FormattedMessage
+                  id="registryOpen.createForm.techContact.title"
+                  defaultMessage="技术联系人"
+                />
+                &nbsp;
+                <FormattedMessage
+                  id="registryOpen.createForm.techContactTel"
+                  defaultMessage="手机"
+                />
               </Col>
               <Col span={12} className="text-lf">
                 {basicInfo.techContactTel}
@@ -146,7 +228,15 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
             </Row>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                技术联系人电话
+                <FormattedMessage
+                  id="registryOpen.createForm.techContact.title"
+                  defaultMessage="技术联系人"
+                />
+                &nbsp;
+                <FormattedMessage
+                  id="registryOpen.createForm.techContactPhone"
+                  defaultMessage="电话"
+                />
               </Col>
               <Col span={12} className="text-lf">
                 {basicInfo.techContactPhone}
@@ -154,7 +244,15 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
             </Row>
             <Row className="col-list">
               <Col span={12} className="text-rt border-right">
-                技术联系人邮箱
+                <FormattedMessage
+                  id="registryOpen.createForm.techContact.title"
+                  defaultMessage="技术联系人"
+                />
+                &nbsp;
+                <FormattedMessage
+                  id="registryOpen.createForm.techContactEmail"
+                  defaultMessage="邮箱"
+                />
               </Col>
               <Col span={12} className="text-lf">
                 {basicInfo.techContactEmail}
@@ -166,13 +264,23 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
 
       {/** 注册局管理员信息 */}
       <List
-        header={<div className="head-title">注册局管理员信息</div>}
+        header={
+          <div className="head-title">
+            <FormattedMessage
+              id="registryOpen.createForm.preview.first.title"
+              defaultMessage="注册局管理员信息"
+            />
+          </div>
+        }
         bordered
         className="mbl"
       >
         <Row className="col-list">
           <Col span={12} className="text-rt border-right">
-            注册局管理员名称
+            <FormattedMessage
+              id="registryOpen.createForm.account.name"
+              defaultMessage="注册局管理员名称"
+            />
           </Col>
           <Col span={12} className="text-lf">
             {accountInfo.name}
@@ -180,7 +288,10 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
         </Row>
         <Row className="col-list">
           <Col span={12} className="text-rt border-right">
-            登录帐号
+            <FormattedMessage
+              id="registryOpen.createForm.account.username"
+              defaultMessage="登录帐号"
+            />
           </Col>
           <Col span={12} className="text-lf">
             {accountInfo.username}
@@ -188,7 +299,10 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
         </Row>
         <Row className="col-list">
           <Col span={12} className="text-rt border-right">
-            登录密码
+            <FormattedMessage
+              id="registryOpen.createForm.account.password"
+              defaultMessage="登录密码"
+            />
           </Col>
           <Col span={12} className="text-lf">
             {accountInfo.password}
@@ -196,7 +310,10 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
         </Row>
         <Row className="col-list">
           <Col span={12} className="text-rt border-right">
-            邮箱
+            <FormattedMessage
+              id="registryOpen.createForm.account.email"
+              defaultMessage="邮箱"
+            />
           </Col>
           <Col span={12} className="text-lf">
             {accountInfo.email}
@@ -206,13 +323,20 @@ const CreateForm: React.FC<CreateStepFormProps & { formData: any }> = (
 
       {/**  注册局授权TLD信息 - 表格渲染  */}
       <ComponentTable
-        title={() => <p className="head-title pts pbs">注册局授权TLD信息</p>}
+        title={() => (
+          <div className="head-title pts pbs">
+            <FormattedMessage
+              id="registryOpen.createForm.preview.third.title"
+              defaultMessage="注册局授权TLD信息"
+            />
+          </div>
+        )}
         loading={false}
-        tableData={formData.tldInfo}
+        tableData={tldInfo}
       />
 
       <div className="text-ct pbl ptl">
-        <Button type="primary" onClick={() => handleStepChange(2)}>
+        <Button type="primary" onClick={handleReturnToPrev}>
           <FormattedMessage id="registryOpen.createForm.btn.prev" />
         </Button>
         <Button className="mll" type="primary" onClick={handleSubmit}>

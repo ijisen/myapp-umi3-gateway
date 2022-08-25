@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'antd';
 import { useIntl, FormattedMessage } from 'umi';
-
-import { RuleObject, StoreValue } from 'rc-field-form/lib/interface';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import {
   validatorEmail,
@@ -13,25 +12,20 @@ import {
 import FormItemRender from '../_component/FormItemRender';
 
 import { CreateStepFormProps } from '../typings.d';
+import { FieldData } from 'rc-field-form/es/interface';
+import { RuleObject, StoreValue } from 'rc-field-form/lib/interface';
 
 /**
  * 第二步：初始化管理员帐号
  *
  * */
 const CreateForm: React.FC<CreateStepFormProps> = (props) => {
+  const { registryFormData } = props;
   const [form] = Form.useForm();
   const { formatMessage } = useIntl();
-  const [formData, setFormData] = useState({
-    // accountInfo.name =》 注册局管理员名称
-    name: '注册局管理员名称',
-    // accountInfo.username =》 登录帐号
-    username: `userA123ame`,
-    // accountInfo.password =》 登录密码
-    password: '61A010@0',
-    // accountInfo.repeatPassword =》 重复输入密码
-    repeatPassword: '61A010@0',
-    // accountInfo.email =》 邮箱
-    email: '115@768.cc',
+  const [formData, setFormData] = useState(registryFormData.accountInfo);
+  const [formStatus, setFormStatus] = useState({
+    submitting: false,
   });
   /** 管理员帐号信息 */
   const formItem = {
@@ -117,20 +111,62 @@ const CreateForm: React.FC<CreateStepFormProps> = (props) => {
     ],
   };
 
+  /** 提交数据前， 校验账户是否存在 */
+  const validateUserNameIsExist = async (values: any) => {
+    const { httpValueExistValidator, handleChildSubmit, formName } = props;
+    let failed_msg = formatMessage({
+      id: 'registryOpen.username.validator.failed',
+    });
+    let resConfig: FieldData = {
+      name: 'username',
+      validating: true,
+      warnings: [
+        formatMessage({ id: 'registryOpen.username.validator.loading' }),
+      ],
+      errors: [],
+    };
+    setFormStatus({ submitting: true });
+    form.setFields([resConfig]);
+    const res = await httpValueExistValidator({
+      params: { username: values.username },
+      type: 'username',
+    });
+    console.log(res);
+    const { success, message } = res || {};
+    if (success) {
+      handleChildSubmit(formName, values);
+      resConfig = {
+        ...resConfig,
+        validating: false,
+        warnings: [],
+        errors: [],
+      };
+    } else {
+      resConfig = {
+        ...resConfig,
+        validating: false,
+        warnings: [],
+        errors: [message || failed_msg],
+      };
+    }
+    form.setFields([resConfig]);
+    setFormStatus({ submitting: false });
+  };
+
   /** 数据提交 */
   const handleSubmit = () => {
     form
       .validateFields()
-      .then((res) => {
-        console.log(res);
-        form.submit();
+      .then((values) => {
+        console.log(values);
+        validateUserNameIsExist(values);
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const { formItemLayout, buttonItemLayout, formName, handleStepChange } =
+  const { formName, formItemLayout, buttonItemLayout, handleStepChange } =
     props;
   return (
     <Form
@@ -138,15 +174,20 @@ const CreateForm: React.FC<CreateStepFormProps> = (props) => {
       initialValues={formData}
       name={formName}
       form={form}
+      disabled={formStatus.submitting}
     >
       {/** 管理员帐号信息 */}
       <FormItemRender data={formItem.accountInfo} />
 
       <Form.Item {...buttonItemLayout} className="text-ct">
-        <Button type="primary" onClick={() => handleStepChange(0)}>
+        <Button
+          type="primary"
+          onClick={() => handleStepChange(formName, 'prev')}
+        >
           <FormattedMessage id="registryOpen.createForm.btn.prev" />
         </Button>
         <Button className="mll" type="primary" onClick={handleSubmit}>
+          {formStatus.submitting && <LoadingOutlined className="mrs" />}
           <FormattedMessage id="registryOpen.createForm.btn.next" />
         </Button>
       </Form.Item>

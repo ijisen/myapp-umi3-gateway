@@ -2,8 +2,7 @@ import { formatMessage } from 'umi';
 import { isCellPhone, isEmail } from 'varian-validator';
 
 /** type 类申明 */
-// import type { FormInstance } from 'antd';
-import { RuleObject, StoreValue } from 'rc-field-form/lib/interface';
+import { RuleObject } from 'rc-field-form/lib/interface';
 
 /**
  * 普通文本格式校验

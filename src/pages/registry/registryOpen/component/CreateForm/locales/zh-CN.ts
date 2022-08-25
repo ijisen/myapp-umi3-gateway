@@ -3,6 +3,7 @@ export default {
   'registryOpen.createForm.btn.next': '下一步',
   'registryOpen.createForm.btn.submit': '提交',
   'registryOpen.createForm.btn.preview': '预览',
+  'registryOpen.createForm.btn.return': '返回首页',
 
   /** 【开通注册局-创建表单】国际化字段 */
   'registryOpen.createForm.step.first': '第一步',
@@ -30,7 +31,21 @@ export default {
     '长度为3-32位，由大小写字母、数字或特殊符号(只包括-_.)组成，且必须由字母开头，字母或数字结尾',
   'registryOpen.createForm.password.required': '请输入登录账号',
   'registryOpen.createForm.password.error':
-    '长度为3-32位，由大小写字母、数字或特殊符号(只包括-_.)组成，且必须由字母开头，字母或数字结尾',
+    '密码长度为8-16位，不能包含空格，且必须包含数字、大小写字母、特殊字符至少三种',
+
+  'registryOpen.validator.failed': '校验失败',
+  'registryOpen.registry.validator.failed': '注册局名称校验失败',
+  'registryOpen.registry.validator.loading': '注册局名称后台校验中...',
+  'registryOpen.registry.validator.err.exist': '注册局名称已经存在',
+  'registryOpen.username.validator.failed': '登录帐号校验失败',
+  'registryOpen.username.validator.loading': '登录帐号后台校验中...',
+  'registryOpen.username.validator.err.exist': '注册局名称已经存在',
+  'registryOpen.tld.validator.failed': 'TLD校验失败',
+  'registryOpen.tld.validator.loading': 'TLD后台校验中...',
+  'registryOpen.tld.validator.err.exist': '授权TLD失败！{tld} 已经被授权',
+
+  'registryOpen.success': '注册局开通成功',
+  'registryOpen.failed': '注册局开通失败',
 
   /** ====== 第一步 - 注册局基本信息 ======  */
   // 注册局信息
@@ -57,8 +72,8 @@ export default {
   'registryOpen.createForm.techContactTel': '手机',
   'registryOpen.createForm.techContactPhone': '电话',
   'registryOpen.createForm.techContactEmail': '邮箱',
+
   /** ====== 第二步 - 初始化管理员账号 ======  */
-  // 注册局信息
   'registryOpen.createForm.account.name': '注册局管理员名称',
   'registryOpen.createForm.account.username': '登录帐号',
   'registryOpen.createForm.account.password': '登录密码',
@@ -67,7 +82,7 @@ export default {
   'registryOpen.createForm.account.repeatPassword.error': '密码不一致，请确认',
   'registryOpen.createForm.account.email': '邮箱',
 
-  /** ====== 第二步 - TLD 授权 ======  */
+  /** ====== 第三步 - TLD 授权 ======  */
   'registryOpen.createForm.tld.btn.create': '添加授权TLD',
   'registryOpen.createForm.tld.btn.edit': '编辑',
   'registryOpen.createForm.tld.btn.delete': '删除',
@@ -78,6 +93,8 @@ export default {
   'registryOpen.createForm.tld.error': '只能输入汉字、字母、数字',
   'registryOpen.createForm.tld.required': '请填写TLD',
 
-  'registryOpen.success': '注册局开通成功',
-  'registryOpen.failed': '注册局开通失败',
+  /** ====== 第四步 - 信息预览 ======  */
+  'registryOpen.createForm.preview.first.title': '注册局信息',
+  'registryOpen.createForm.preview.second.title': '注册局管理员信息',
+  'registryOpen.createForm.preview.third.title': '注册局授权TLD信息',
 };

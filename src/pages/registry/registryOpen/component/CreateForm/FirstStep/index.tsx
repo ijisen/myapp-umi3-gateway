@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { FormattedMessage, useIntl } from 'umi';
 import { Form, Button } from 'antd';
-import { RightOutlined } from '@ant-design/icons';
+import { RightOutlined, LoadingOutlined } from '@ant-design/icons';
 import { isPostalCode } from 'varian-validator';
+
 import { RuleObject, StoreValue } from 'rc-field-form/lib/interface';
 
 import {
@@ -11,50 +13,24 @@ import {
   validatorTelephone,
 } from '../_utils';
 import FormItemRender from '../_component/FormItemRender';
-import { formatMessage, FormattedMessage } from '../locales';
 
 import { CreateStepFormProps } from '../typings.d';
+import { FieldData } from 'rc-field-form/es/interface';
 
-import style from '../style.less';
+import style from './style.less';
 
 /**
  * 第一步：注册局基本信息
  *
  * */
 const CreateForm: React.FC<CreateStepFormProps> = (props) => {
+  const { registryFormData, httpValueExistValidator } = props;
+  const { formatMessage } = useIntl();
   const [form] = Form.useForm();
   const [showTechContact, setShowTechContact] = useState(false);
-  const [formData, setFormData] = useState({
-    // registry.name =》 注册局名称
-    name: '注册局名称',
-    // registry.address =》 注册局地址
-    address: `注册局地址`,
-    // registry.postCode =》 邮编
-    postCode: '610100',
-    // registry.tel =》 电话
-    tel: '1023141',
-    // registry.fax =》 传真
-    fax: '115768',
-    // registry.email =》 邮箱
-    email: '111@cc.cc',
-    /** 管理联系人 */
-    // registry.adminContactName =》 管理名称
-    adminContactName: '管理名称',
-    // registry.adminContactTel =》 管理手机
-    adminContactTel: '15910665811',
-    // registry.adminContactPhone =》 管理电话
-    adminContactPhone: '125467',
-    // registry.adminContactEmail =》 管理邮箱
-    adminContactEmail: 'admin@cc.cc',
-    /** 技术联系人 */
-    // registry.techContactName =》
-    techContactName: '技术名称',
-    // registry.techContactTel =》 技术手机
-    techContactTel: '15910665812',
-    // registry.techContactPhone =》 技术电话
-    techContactPhone: '125467',
-    // registry.techContactEmail =》 技术邮箱
-    techContactEmail: 'tech@cc.cc',
+  const [formData, setFormData] = useState(registryFormData.basicInfo);
+  const [formStatus, setFormStatus] = useState({
+    submitting: false,
   });
   /** 注册局信息 */
   const formItem = {
@@ -63,6 +39,9 @@ const CreateForm: React.FC<CreateStepFormProps> = (props) => {
         name: 'name',
         label: formatMessage({ id: 'registryOpen.createForm.name' }),
         // validateTrigger: ['onBlur'],
+        hasFeedback: true,
+        // validateStatus: 'validating',
+        // help: 'The information is being validated...',
         rules: [
           {
             required: true,
@@ -257,13 +236,54 @@ const CreateForm: React.FC<CreateStepFormProps> = (props) => {
     ],
   };
 
+  /** 提交数据前， 校验注册局名称是否存在 */
+  const validateNameIsExist = async (values: any) => {
+    const { handleChildSubmit, formName } = props;
+    let failed_msg = formatMessage({
+      id: 'registryOpen.registry.validator.failed',
+    });
+    let resConfig: FieldData = {
+      name: 'name',
+      validating: true,
+      warnings: [
+        formatMessage({ id: 'registryOpen.registry.validator.loading' }),
+      ],
+      errors: [],
+    };
+    setFormStatus({ submitting: true });
+    form.setFields([resConfig]);
+    const res = await httpValueExistValidator({
+      params: { name: values.name },
+      type: 'registry',
+    });
+    console.log(res);
+    const { success, message } = res || {};
+    if (success) {
+      handleChildSubmit(formName, values);
+      resConfig = {
+        ...resConfig,
+        validating: false,
+        warnings: [],
+        errors: [],
+      };
+    } else {
+      resConfig = {
+        ...resConfig,
+        validating: false,
+        warnings: [],
+        errors: [message || failed_msg],
+      };
+    }
+    form.setFields([resConfig]);
+    setFormStatus({ submitting: false });
+  };
   /** 数据提交 */
   const handleSubmit = () => {
     form
       .validateFields()
-      .then((res) => {
-        console.log(res);
-        form.submit();
+      .then((values) => {
+        console.log(values);
+        validateNameIsExist(values);
       })
       .catch((err) => {
         console.log(err);
@@ -277,6 +297,7 @@ const CreateForm: React.FC<CreateStepFormProps> = (props) => {
       initialValues={formData}
       name={formName}
       form={form}
+      disabled={formStatus.submitting}
     >
       {/** 注册局信息 */}
       <FormItemRender data={formItem.registry} />
@@ -299,8 +320,10 @@ const CreateForm: React.FC<CreateStepFormProps> = (props) => {
           <FormItemRender data={formItem.techContact} />
         </>
       )}
+
       <Form.Item {...buttonItemLayout} className="text-ct">
         <Button type="primary" onClick={handleSubmit}>
+          {formStatus.submitting && <LoadingOutlined className="mrs" />}
           <FormattedMessage id="registryOpen.createForm.btn.next" />
         </Button>
       </Form.Item>

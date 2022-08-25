@@ -5,23 +5,9 @@
   min-width: 1000px;
   .dne-create-form-steps {
     border-bottom: 1px solid @border-color-base;
-  }
-
-  .array-close-btn {
-    margin-bottom: 10px;
-    p {
-      display: inline-block;
-      cursor: pointer;
-      &:hover {
-        color: @primary-color;
-      }
-      :global {
-        .anticon {
-          transition: transform 0.2s;
-          &.open {
-            transform: rotate(90deg);
-          }
-        }
+    :global {
+      .ant-steps-item-description {
+        //min-width: 165px;
       }
     }
   }

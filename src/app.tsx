@@ -76,15 +76,19 @@ export async function getInitialState(): Promise<InitialModelState> {
   const fetchUserInfo = async () => {
     try {
       const msg = await queryCurrentUser();
+      console.log(msg);
+      console.log(1111811);
       return msg.data;
     } catch (error) {
+      console.log(error);
       // history.push(loginPath);
+      return undefined;
     }
-    return undefined;
   };
   // 如果不是登录页面，执行
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
+    console.log(currentUser);
     return {
       fetchUserInfo,
       currentUser,
@@ -167,7 +171,7 @@ export const layout = ({
       console.log(22222222);
       const first = routes.indexOf(route) === 0;
       return first ? (
-        <HomeOutlined />
+        <HomeOutlined className="color-primary" />
       ) : (
         // <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
         // <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
